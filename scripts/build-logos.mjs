@@ -19,11 +19,9 @@ const LOGOS = {
   mongodb: "mongodb", numpy: "numpy", pandas: "pandas", git: "git",
 };
 
-// aky: light surfaces get green with gold highlights, the dark bar gets chalk tones.
-const RAMPS = {
-  light: { stops: [[22, 46, 32], [44, 110, 72], [201, 162, 62]], flat: 0.42, dir: "" },
-  dark: { stops: [[185, 143, 46], [242, 208, 107], [255, 246, 216]], flat: 0.5, dir: "chalk" },
-};
+// aky: dark areas become deep green and light areas become gold.
+const STOPS = [[22, 46, 32], [44, 110, 72], [201, 162, 62]];
+const FLAT_TONE = 0.42;
 
 const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
 const ramp = (stops, t) => (t < 0.5 ? mix(stops[0], stops[1], t * 2) : mix(stops[1], stops[2], (t - 0.5) * 2));
@@ -38,7 +36,7 @@ function source(name) {
 }
 
 rmSync(out, { recursive: true, force: true });
-mkdirSync(join(out, "chalk"), { recursive: true });
+mkdirSync(out, { recursive: true });
 
 for (const [slug, name] of Object.entries(LOGOS)) {
   const { data, info } = await sharp(source(name), { density: 600 })
@@ -54,15 +52,13 @@ for (const [slug, name] of Object.entries(LOGOS)) {
   const high = values[Math.floor(values.length * 0.98)];
   const flat = high - low < 0.12;
 
-  for (const { stops, flat: flatTone, dir } of Object.values(RAMPS)) {
-    const pixels = Buffer.from(data);
-    for (let i = 0; i < pixels.length; i += 4) {
-      const t = flat ? flatTone : Math.min(1, Math.max(0, (lum(data, i) - low) / (high - low)));
-      [pixels[i], pixels[i + 1], pixels[i + 2]] = ramp(stops, t);
-    }
-    await sharp(pixels, { raw: { width: info.width, height: info.height, channels: 4 } })
-      .png({ compressionLevel: 9 })
-      .toFile(join(out, dir, `${slug}.png`));
+  const pixels = Buffer.from(data);
+  for (let i = 0; i < pixels.length; i += 4) {
+    const t = flat ? FLAT_TONE : Math.min(1, Math.max(0, (lum(data, i) - low) / (high - low)));
+    [pixels[i], pixels[i + 1], pixels[i + 2]] = ramp(STOPS, t);
   }
+  await sharp(pixels, { raw: { width: info.width, height: info.height, channels: 4 } })
+    .png({ compressionLevel: 9 })
+    .toFile(join(out, `${slug}.png`));
 }
-console.log(`wrote ${Object.keys(LOGOS).length * 2} logos`);
+console.log(`wrote ${Object.keys(LOGOS).length} logos`);

@@ -5,7 +5,7 @@ import { Aky } from "./Aky";
 import { Icon } from "./Icon";
 import { SubjectBar } from "./SubjectBar";
 
-const SUBJECTS = COURSES.map(({ slug, name, icon }) => ({ slug, name, icon }));
+const SUBJECTS = COURSES.map(({ slug, name }) => ({ slug, name }));
 
 export function Logo() {
   return (

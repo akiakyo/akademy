@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { CourseLogo } from "./CourseLogo";
 import { Icon } from "./Icon";
 
-export type Subject = { slug: string; name: string; icon: string };
+export type Subject = { slug: string; name: string };
 
 export function SubjectBar({ subjects, active }: { subjects: Subject[]; active?: string }) {
   const track = useRef<HTMLDivElement>(null);
@@ -41,7 +40,6 @@ export function SubjectBar({ subjects, active }: { subjects: Subject[]; active?:
       <div className="subject-track" ref={track} onScroll={measure}>
         {subjects.map((s) => (
           <Link key={s.slug} href={`/learn/${s.slug}`} aria-current={s.slug === active ? "page" : undefined}>
-            <CourseLogo slug={s.slug} icon={s.icon} size={18} surface={s.slug === active ? "light" : "dark"} />
             {s.name}
           </Link>
         ))}

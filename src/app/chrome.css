@@ -220,8 +220,6 @@ h2.center::after { margin-inline: auto; }
 /* Subject logos: transparent PNGs */
 .course-logo { flex: none; object-fit: contain; transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
 .card:hover .course-logo { transform: rotate(-6deg) scale(1.1); }
-.subject-track a { display: inline-flex; align-items: center; gap: 7px; }
-.subject-track a:not([aria-current]) .course-logo { filter: drop-shadow(0 0 1px #fff9) drop-shadow(0 0 1px #fff6); }
 .language-cloud a { display: inline-flex; align-items: center; gap: 7px; }
 .link-grid a { display: flex; align-items: center; gap: 9px; }
 .logo-cell { display: flex; align-items: center; gap: 8px; }
